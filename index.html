@@ -4,28 +4,33 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>تسجيل خدمة النهضة</title>
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
     <style> body { font-family: 'Cairo', sans-serif; } </style>
 </head>
 <body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col justify-between p-4 sm:p-6">
 
+    <!-- Header -->
     <header class="max-w-xl mx-auto w-full text-center my-4">
         <h1 class="text-2xl sm:text-3xl font-extrabold text-cyan-400 mb-1">استمارة تسجيل الخدمة</h1>
         <p class="text-xs sm:text-sm text-slate-400">سجل مشاركتك وفكرتك للـ 15 يوماً القادمة</p>
     </header>
 
+    <!-- Main Container -->
     <main class="max-w-xl mx-auto w-full flex-grow flex items-center justify-center">
 
         <!-- Form Card -->
         <div id="form-card" class="bg-slate-900 border border-slate-800 rounded-2xl p-6 sm:p-8 w-full shadow-2xl">
             <form id="servant-form" onsubmit="handleSubmit(event)" class="space-y-5">
                 
+                <!-- Servant Name -->
                 <div>
                     <label class="block text-xs font-semibold text-slate-300 mb-1.5">اسم الخادم *</label>
                     <input type="text" id="servant-name" required placeholder="اكتب اسمك ثلاثياً..." class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-sm text-slate-100 focus:outline-none focus:border-cyan-500">
                 </div>
 
+                <!-- Family Selection -->
                 <div>
                     <label class="block text-xs font-semibold text-slate-300 mb-1.5">الفصل / الأسرة *</label>
                     <select id="family-select" required class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-sm text-slate-100 focus:outline-none focus:border-cyan-500">
@@ -36,13 +41,15 @@
                     </select>
                 </div>
 
+                <!-- Date Selection -->
                 <div>
                     <label class="block text-xs font-semibold text-slate-300 mb-1.5">اليوم *</label>
                     <select id="date-select" required class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-sm text-slate-100 focus:outline-none focus:border-cyan-500">
-                        <!-- Generated Dynamically -->
+                        <option value="" disabled selected>اختر اليوم...</option>
                     </select>
                 </div>
 
+                <!-- Has Idea Choice -->
                 <div>
                     <label class="block text-xs font-semibold text-slate-300 mb-2">مجهز فقرة أو فكرة؟ *</label>
                     <div class="flex gap-4">
@@ -57,16 +64,19 @@
                     </div>
                 </div>
 
+                <!-- Idea Textarea -->
                 <div id="idea-container" class="hidden">
                     <label class="block text-xs font-semibold text-cyan-400 mb-1.5">تفاصيل الفقرة / الفكرة *</label>
                     <textarea id="idea-text" rows="3" placeholder="اكتب فكرتك بالتفصيل هنا..." class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-sm text-slate-100 focus:outline-none focus:border-cyan-500 resize-none"></textarea>
                 </div>
 
+                <!-- Notes for Admin -->
                 <div>
                     <label class="block text-xs font-semibold text-slate-400 mb-1.5">ملاحظات للأمين (اختياري)</label>
                     <textarea id="admin-notes" rows="2" placeholder="أي استفسار أو تنبيه خاص بيك..." class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-sm text-slate-200 focus:outline-none focus:border-slate-700 resize-none"></textarea>
                 </div>
 
+                <!-- Submit Button -->
                 <button type="submit" id="submit-btn" class="w-full bg-cyan-600 hover:bg-cyan-500 text-slate-950 font-bold text-sm py-3 rounded-xl transition shadow-lg shadow-cyan-950">
                     إرسال التسجيل
                 </button>
