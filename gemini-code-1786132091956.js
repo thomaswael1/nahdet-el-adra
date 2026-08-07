@@ -1,25 +1,40 @@
 const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzGMMo8mE7_RXEDMnZ-glfmH9kqd4rMm-FMNAIUlZYX4oHTMLKXx6A1dsPImA08KqoNAw/exec";
 
-const startDate = new Date('2026-08-07');
-const totalDays = 15;
+// قائمة الـ 15 يوماً المحددة جاهزة ومباشرة
+const daysList = [
+    "اليوم 1 (الجمعة 7 أغسطس)",
+    "اليوم 2 (السبت 8 أغسطس)",
+    "اليوم 3 (الأحد 9 أغسطس)",
+    "اليوم 4 (الإثنين 10 أغسطس)",
+    "اليوم 5 (الثلاثاء 11 أغسطس)",
+    "اليوم 6 (الأربعاء 12 أغسطس)",
+    "اليوم 7 (الخميس 13 أغسطس)",
+    "اليوم 8 (الجمعة 14 أغسطس)",
+    "اليوم 9 (السبت 15 أغسطس)",
+    "اليوم 10 (الأحد 16 أغسطس)",
+    "اليوم 11 (الإثنين 17 أغسطس)",
+    "اليوم 12 (الثلاثاء 18 أغسطس)",
+    "اليوم 13 (الأربعاء 19 أغسطس)",
+    "اليوم 14 (الخميس 20 أغسطس)",
+    "اليوم 15 (الجمعة 21 أغسطس)"
+];
 
 function initForm() {
     const dateSelect = document.getElementById('date-select');
+    if (!dateSelect) return;
+    
     dateSelect.innerHTML = '<option value="" disabled selected>اختر اليوم...</option>';
 
-    for (let i = 0; i < totalDays; i++) {
-        const currentDate = new Date(startDate);
-        currentDate.setDate(startDate.getDate() + i);
-        
-        const dayLabel = currentDate.toLocaleDateString('ar-EG', { weekday: 'long', month: 'short', day: 'numeric' });
-
+    daysList.forEach((dayText) => {
         const option = document.createElement('option');
-        option.value = `اليوم ${i + 1} (${dayLabel})`;
-        option.innerText = `اليوم ${i + 1} (${dayLabel})`;
+        option.value = dayText;
+        option.innerText = dayText;
         dateSelect.appendChild(option);
-    }
+    });
 }
 
+// تشغيل الدالة فور تحميل الملف
+document.addEventListener('DOMContentLoaded', initForm);
 initForm();
 
 function toggleIdeaBox(show) {
