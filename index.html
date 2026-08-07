@@ -18,9 +18,9 @@
     </header>
 
     <!-- Main Container -->
-    <main class="max-w-xl mx-auto w-full flex-grow flex items-center justify-center">
+    <main class="max-w-xl mx-auto w-full flex-grow flex items-center justify-center flex-col">
 
-        <!-- Form Card -->
+        <!-- 1. Form Card -->
         <div id="form-card" class="bg-slate-900 border border-slate-800 rounded-2xl p-6 sm:p-8 w-full shadow-2xl">
             <form id="servant-form" onsubmit="handleSubmit(event)" class="space-y-5">
                 
@@ -98,7 +98,7 @@
             </form>
         </div>
 
-        <!-- Thank You Card -->
+        <!-- 2. Thank You Card -->
         <div id="thankyou-card" class="hidden bg-slate-900 border border-emerald-500/30 rounded-2xl p-8 w-full text-center shadow-2xl">
             <div class="w-16 h-16 bg-emerald-500/10 text-emerald-400 rounded-full flex items-center justify-center mx-auto mb-4 text-3xl font-bold">✓</div>
             <h2 class="text-2xl font-bold text-slate-100 mb-2">شكراً على خدمتك!</h2>
@@ -109,10 +109,69 @@
             </button>
         </div>
 
+        <!-- 3. Admin Dashboard View -->
+        <div id="admin-dashboard" class="hidden bg-slate-900 border border-slate-800 rounded-2xl p-6 w-full shadow-2xl space-y-6">
+            <div class="flex justify-between items-center border-b border-slate-800 pb-4">
+                <h2 class="text-lg font-bold text-cyan-400">لوحة تحكم الأمين 🔒</h2>
+                <button onclick="closeAdminDashboard()" class="text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 px-3 py-1.5 rounded-lg border border-slate-700">خروج</button>
+            </div>
+
+            <!-- Calendar Selector -->
+            <div>
+                <label class="block text-xs font-semibold text-slate-400 mb-2">اختر اليوم لمشاهدة التسجيلات:</label>
+                <div id="admin-days-grid" class="grid grid-cols-3 sm:grid-cols-5 gap-2">
+                    <!-- Days Buttons Generated Dynamically -->
+                </div>
+            </div>
+
+            <!-- Details Display -->
+            <div id="day-details-container" class="space-y-4 pt-2">
+                <div class="text-center text-xs text-slate-500 py-6">اختر يوماً من الأعلى لعرض تفاصيل التسجيلات والأسر</div>
+            </div>
+        </div>
+
     </main>
+
+    <!-- Footer Admin Button -->
+    <footer class="max-w-xl mx-auto w-full text-center mt-6 pt-4 border-t border-slate-900">
+        <button onclick="openAdminModal()" class="text-xs text-slate-600 hover:text-cyan-400 transition flex items-center gap-1.5 mx-auto">
+            <span>🔒</span> دخول الأمين
+        </button>
+    </footer>
+
+    <!-- Admin Password Modal -->
+    <div id="password-modal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl w-full max-w-xs p-6 text-center shadow-2xl relative">
+            <button onclick="closePasswordModal()" class="absolute top-3 left-3 text-slate-500 hover:text-slate-300">✕</button>
+            <h3 class="text-sm font-bold text-slate-100 mb-4">كلمة سر الأمين</h3>
+            <input type="password" id="admin-pass-input" placeholder="أدخل الرقم السرّي..." class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-center text-sm text-slate-100 focus:outline-none focus:border-cyan-500 mb-4">
+            <button onclick="verifyAdminPassword()" class="w-full bg-cyan-600 hover:bg-cyan-500 text-slate-950 font-bold text-xs py-2.5 rounded-xl transition">تأكيد الدخول</button>
+        </div>
+    </div>
 
     <script>
         const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzGMMo8mE7_RXEDMnZ-glfmH9kqd4rMm-FMNAIUlZYX4oHTMLKXx6A1dsPImA08KqoNAw/exec";
+
+        const daysList = [
+            "اليوم 1 (الجمعة 7 أغسطس)",
+            "اليوم 2 (السبت 8 أغسطس)",
+            "اليوم 3 (الأحد 9 أغسطس)",
+            "اليوم 4 (الإثنين 10 أغسطس)",
+            "اليوم 5 (الثلاثاء 11 أغسطس)",
+            "اليوم 6 (الأربعاء 12 أغسطس)",
+            "اليوم 7 (الخميس 13 أغسطس)",
+            "اليوم 8 (الجمعة 14 أغسطس)",
+            "اليوم 9 (السبت 15 أغسطس)",
+            "اليوم 10 (الأحد 16 أغسطس)",
+            "اليوم 11 (الإثنين 17 أغسطس)",
+            "اليوم 12 (الثلاثاء 18 أغسطس)",
+            "اليوم 13 (الأربعاء 19 أغسطس)",
+            "اليوم 14 (الخميس 20 أغسطس)",
+            "اليوم 15 (الجمعة 21 أغسطس)"
+        ];
+
+        let selectedAdminDay = null;
+        let localSubmissions = [];
 
         function toggleIdeaBox(show) {
             const container = document.getElementById('idea-container');
@@ -142,6 +201,9 @@
                 ideaText: document.getElementById('idea-text').value.trim(),
                 adminNotes: document.getElementById('admin-notes').value.trim()
             };
+
+            // حفظ نسخة محلية للعرض الفوري في الداشبورد
+            localSubmissions.push(formData);
 
             fetch(SCRIPT_URL, {
                 method: 'POST',
@@ -175,6 +237,102 @@
 
             document.getElementById('thankyou-card').classList.add('hidden');
             document.getElementById('form-card').classList.remove('hidden');
+        }
+
+        // ================= ADMIN FUNCTIONS =================
+        function openAdminModal() {
+            document.getElementById('password-modal').classList.remove('hidden');
+            document.getElementById('admin-pass-input').value = '';
+            document.getElementById('admin-pass-input').focus();
+        }
+
+        function closePasswordModal() {
+            document.getElementById('password-modal').classList.add('hidden');
+        }
+
+        function verifyAdminPassword() {
+            const pass = document.getElementById('admin-pass-input').value;
+            if (pass === '456456') {
+                closePasswordModal();
+                openAdminDashboard();
+            } else {
+                alert('كلمة السر غير صحيحة!');
+            }
+        }
+
+        function openAdminDashboard() {
+            document.getElementById('form-card').classList.add('hidden');
+            document.getElementById('thankyou-card').classList.add('hidden');
+            document.getElementById('admin-dashboard').classList.remove('hidden');
+
+            renderAdminCalendarGrid();
+        }
+
+        function closeAdminDashboard() {
+            document.getElementById('admin-dashboard').classList.add('hidden');
+            document.getElementById('form-card').classList.remove('hidden');
+        }
+
+        function renderAdminCalendarGrid() {
+            const grid = document.getElementById('admin-days-grid');
+            grid.innerHTML = '';
+
+            daysList.forEach((dayText, idx) => {
+                const btn = document.createElement('button');
+                btn.className = `p-2 rounded-xl text-xs font-bold border border-slate-800 transition ${selectedAdminDay === dayText ? 'bg-cyan-600 text-slate-950 border-cyan-500' : 'bg-slate-950 text-slate-300 hover:border-slate-700'}`;
+                btn.innerText = `يوم ${idx + 1}`;
+                btn.onclick = () => selectAdminDay(dayText);
+
+                grid.appendChild(btn);
+            });
+        }
+
+        function selectAdminDay(dayText) {
+            selectedAdminDay = dayText;
+            renderAdminCalendarGrid();
+            renderDayDetails();
+        }
+
+        function renderDayDetails() {
+            const container = document.getElementById('day-details-container');
+            if (!selectedAdminDay) return;
+
+            const daySubmissions = localSubmissions.filter(s => s.date === selectedAdminDay);
+            container.innerHTML = '';
+
+            const families = ['أسرة أولى وثانية', 'أسرة ثالثة ورابعة', 'أسرة خامسة وسادسة'];
+
+            families.forEach(famName => {
+                const fSubmissions = daySubmissions.filter(s => s.family === famName);
+
+                const famBox = document.createElement('div');
+                famBox.className = "bg-slate-950 border border-slate-800/80 rounded-xl p-4";
+
+                let submissionsHtml = '';
+                if (fSubmissions.length === 0) {
+                    submissionsHtml = `<p class="text-xs text-slate-600 italic">لا توجد تسجيلات جديدة لهذه الأسرة حتى الآن</p>`;
+                } else {
+                    submissionsHtml = fSubmissions.map(item => `
+                        <div class="bg-slate-900 border border-slate-800/60 rounded-lg p-3 text-xs space-y-1.5 relative">
+                            <div class="font-bold text-slate-100">${item.name}</div>
+                            ${item.hasIdea ? `<div class="text-cyan-400 bg-cyan-950/40 p-2 rounded border border-cyan-900/50"><strong class="block text-[10px] text-cyan-300">الفكرة:</strong> ${item.ideaText}</div>` : '<div class="text-slate-500">بدون فقرة</div>'}
+                            ${item.adminNotes ? `<div class="text-amber-400/90 bg-amber-950/20 p-2 rounded border border-amber-900/40"><strong class="block text-[10px] text-amber-300">ملاحظة للأمين:</strong> ${item.adminNotes}</div>` : ''}
+                        </div>
+                    `).join('');
+                }
+
+                famBox.innerHTML = `
+                    <div class="flex justify-between items-center mb-3">
+                        <h4 class="text-xs font-bold text-cyan-400">${famName}</h4>
+                        <span class="text-[10px] bg-slate-900 px-2 py-0.5 rounded text-slate-400">${fSubmissions.length} مشارك</span>
+                    </div>
+                    <div class="space-y-2">
+                        ${submissionsHtml}
+                    </div>
+                `;
+
+                container.appendChild(famBox);
+            });
         }
     </script>
 </body>
