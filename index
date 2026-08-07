@@ -3,173 +3,88 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>جدول الخدمة المطور - 15 يوماً</title>
-    <!-- Tailwind CSS -->
+    <title>تسجيل خدمة النهضة</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
-    <!-- Firebase SDKs -->
-    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
-    <style>
-        body { font-family: 'Cairo', sans-serif; }
-        @media print {
-            .no-print { display: none !important; }
-            body { background: white !important; color: black !important; }
-            .print-card { border: 1px solid #ccc !important; background: white !important; color: black !important; page-break-inside: avoid; }
-        }
-    </style>
+    <style> body { font-family: 'Cairo', sans-serif; } </style>
 </head>
 <body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col justify-between p-4 sm:p-6">
 
-    <!-- Header Status Bar -->
-    <header class="max-w-5xl mx-auto w-full flex flex-wrap justify-between items-center bg-slate-900/80 backdrop-blur border border-slate-800 rounded-2xl p-4 mb-6 sticky top-2 z-40 shadow-xl gap-3 no-print">
-        <div class="flex items-center space-x-3 space-x-reverse">
-            <button id="back-btn" class="hidden text-xs bg-slate-800 hover:bg-slate-700 text-slate-200 px-3 py-1.5 rounded-lg border border-slate-700 transition">
-                ← تغيير الأسرة
-            </button>
-            <h1 id="page-title" class="text-base sm:text-lg font-bold text-cyan-400">جدول الخدمة التفاعلي</h1>
-        </div>
-        <div class="flex items-center gap-3">
-            <button id="print-btn" onclick="window.print()" class="hidden text-xs bg-cyan-600 hover:bg-cyan-500 text-white px-3 py-1.5 rounded-lg transition font-semibold">
-                🖨️ طباعة / PDF
-            </button>
-            <div id="save-status" class="text-xs px-3 py-1 rounded-full bg-slate-800 border border-slate-700 text-slate-400 flex items-center gap-2">
-                <span class="w-2 h-2 rounded-full bg-slate-500"></span> جاهز
-            </div>
-        </div>
+    <header class="max-w-xl mx-auto w-full text-center my-4">
+        <h1 class="text-2xl sm:text-3xl font-extrabold text-cyan-400 mb-1">استمارة تسجيل الخدمة</h1>
+        <p class="text-xs sm:text-sm text-slate-400">سجل مشاركتك وفكرتك للـ 15 يوماً القادمة</p>
     </header>
 
-    <!-- Main Container -->
-    <main class="max-w-5xl mx-auto w-full flex-grow">
-        
-        <!-- STEP 1: Select Family Cards -->
-        <div id="family-selector" class="grid grid-cols-1 md:grid-cols-3 gap-6 my-auto pt-8 no-print">
-            <div onclick="selectFamily('family1')" class="group cursor-pointer bg-slate-900 border border-slate-800 hover:border-cyan-500/50 hover:bg-slate-800/60 p-8 rounded-2xl shadow-xl transition-all duration-300 text-center flex flex-col justify-between">
-                <div>
-                    <div class="w-16 h-16 bg-cyan-500/10 text-cyan-400 rounded-2xl flex items-center justify-center mx-auto mb-4 text-2xl font-bold group-hover:scale-110 transition-transform">1-2</div>
-                    <h2 class="text-xl font-bold text-slate-100 mb-2">أسرة أولى وثانية</h2>
-                    <p class="text-xs text-slate-400">جدول متابعة الأنشطة والأفكار من 7 إلى 21 أغسطس</p>
-                </div>
-                <span class="mt-6 text-xs text-cyan-400 font-semibold group-hover:underline">دخول للجدول ←</span>
-            </div>
+    <main class="max-w-xl mx-auto w-full flex-grow flex items-center justify-center">
 
-            <div onclick="selectFamily('family2')" class="group cursor-pointer bg-slate-900 border border-slate-800 hover:border-cyan-500/50 hover:bg-slate-800/60 p-8 rounded-2xl shadow-xl transition-all duration-300 text-center flex flex-col justify-between">
+        <!-- Form Card -->
+        <div id="form-card" class="bg-slate-900 border border-slate-800 rounded-2xl p-6 sm:p-8 w-full shadow-2xl">
+            <form id="servant-form" onsubmit="handleSubmit(event)" class="space-y-5">
+                
                 <div>
-                    <div class="w-16 h-16 bg-blue-500/10 text-blue-400 rounded-2xl flex items-center justify-center mx-auto mb-4 text-2xl font-bold group-hover:scale-110 transition-transform">3-4</div>
-                    <h2 class="text-xl font-bold text-slate-100 mb-2">أسرة ثالثة ورابعة</h2>
-                    <p class="text-xs text-slate-400">جدول متابعة الأنشطة والأفكار من 7 إلى 21 أغسطس</p>
+                    <label class="block text-xs font-semibold text-slate-300 mb-1.5">اسم الخادم *</label>
+                    <input type="text" id="servant-name" required placeholder="اكتب اسمك ثلاثياً..." class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-sm text-slate-100 focus:outline-none focus:border-cyan-500">
                 </div>
-                <span class="mt-6 text-xs text-blue-400 font-semibold group-hover:underline">دخول للجدول ←</span>
-            </div>
 
-            <div onclick="selectFamily('family3')" class="group cursor-pointer bg-slate-900 border border-slate-800 hover:border-cyan-500/50 hover:bg-slate-800/60 p-8 rounded-2xl shadow-xl transition-all duration-300 text-center flex flex-col justify-between">
                 <div>
-                    <div class="w-16 h-16 bg-indigo-500/10 text-indigo-400 rounded-2xl flex items-center justify-center mx-auto mb-4 text-2xl font-bold group-hover:scale-110 transition-transform">5-6</div>
-                    <h2 class="text-xl font-bold text-slate-100 mb-2">أسرة خامسة وسادسة</h2>
-                    <p class="text-xs text-slate-400">جدول متابعة الأنشطة والأفكار من 7 إلى 21 أغسطس</p>
+                    <label class="block text-xs font-semibold text-slate-300 mb-1.5">الفصل / الأسرة *</label>
+                    <select id="family-select" required class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-sm text-slate-100 focus:outline-none focus:border-cyan-500">
+                        <option value="" disabled selected>اختر أسرتك...</option>
+                        <option value="أسرة أولى وثانية">أسرة أولى وثانية</option>
+                        <option value="أسرة ثالثة ورابعة">أسرة ثالثة ورابعة</option>
+                        <option value="أسرة خامسة وسادسة">أسرة خامسة وسادسة</option>
+                    </select>
                 </div>
-                <span class="mt-6 text-xs text-indigo-400 font-semibold group-hover:underline">دخول للجدول ←</span>
-            </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-slate-300 mb-1.5">اليوم *</label>
+                    <select id="date-select" required class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-sm text-slate-100 focus:outline-none focus:border-cyan-500">
+                        <!-- Generated Dynamically -->
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-slate-300 mb-2">مجهز فقرة أو فكرة؟ *</label>
+                    <div class="flex gap-4">
+                        <label class="flex-1 bg-slate-950 border border-slate-800 rounded-xl p-3 flex items-center justify-center gap-2 cursor-pointer hover:border-slate-700">
+                            <input type="radio" name="has-idea" value="yes" onchange="toggleIdeaBox(true)" class="accent-cyan-500" required>
+                            <span class="text-xs font-bold text-slate-200">نعم</span>
+                        </label>
+                        <label class="flex-1 bg-slate-950 border border-slate-800 rounded-xl p-3 flex items-center justify-center gap-2 cursor-pointer hover:border-slate-700">
+                            <input type="radio" name="has-idea" value="no" onchange="toggleIdeaBox(false)" class="accent-cyan-500">
+                            <span class="text-xs font-bold text-slate-200">لا</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div id="idea-container" class="hidden">
+                    <label class="block text-xs font-semibold text-cyan-400 mb-1.5">تفاصيل الفقرة / الفكرة *</label>
+                    <textarea id="idea-text" rows="3" placeholder="اكتب فكرتك بالتفصيل هنا..." class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-sm text-slate-100 focus:outline-none focus:border-cyan-500 resize-none"></textarea>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-slate-400 mb-1.5">ملاحظات للأمين (اختياري)</label>
+                    <textarea id="admin-notes" rows="2" placeholder="أي استفسار أو تنبيه خاص بيك..." class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-sm text-slate-200 focus:outline-none focus:border-slate-700 resize-none"></textarea>
+                </div>
+
+                <button type="submit" id="submit-btn" class="w-full bg-cyan-600 hover:bg-cyan-500 text-slate-950 font-bold text-sm py-3 rounded-xl transition shadow-lg shadow-cyan-950">
+                    إرسال التسجيل
+                </button>
+            </form>
         </div>
 
-        <!-- STEP 2: Calendar View & Advanced Features -->
-        <div id="calendar-view" class="hidden">
+        <!-- Thank You Card -->
+        <div id="thankyou-card" class="hidden bg-slate-900 border border-emerald-500/30 rounded-2xl p-8 w-full text-center shadow-2xl">
+            <div class="w-16 h-16 bg-emerald-500/10 text-emerald-400 rounded-full flex items-center justify-center mx-auto mb-4 text-3xl font-bold">✓</div>
+            <h2 class="text-2xl font-bold text-slate-100 mb-2">شكراً على خدمتك!</h2>
+            <p class="text-xs text-slate-400 mb-6">تم تسجيل بياناتك وفكرتك بنجاح في الشيت.</p>
             
-            <!-- Dashboard Stats Bar -->
-            <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6 no-print">
-                <div class="bg-slate-900 border border-slate-800 p-3 rounded-xl text-center">
-                    <span class="text-[10px] text-slate-400 block">الأيام المكتملة بأفكار</span>
-                    <span id="stat-ideas-count" class="text-lg font-bold text-cyan-400">0 / 15</span>
-                </div>
-                <div class="bg-slate-900 border border-slate-800 p-3 rounded-xl text-center">
-                    <span class="text-[10px] text-slate-400 block">إجمالي الخدام المسجلين</span>
-                    <span id="stat-servants-count" class="text-lg font-bold text-emerald-400">0</span>
-                </div>
-                <div class="bg-slate-900 border border-slate-800 p-3 rounded-xl text-center">
-                    <span class="text-[10px] text-slate-400 block">أيام محتاجة أفكار</span>
-                    <span id="stat-missing-ideas" class="text-lg font-bold text-amber-400">15</span>
-                </div>
-                <div class="bg-slate-900 border border-slate-800 p-3 rounded-xl text-center">
-                    <span class="text-[10px] text-slate-400 block">أيام محتاجة خدام</span>
-                    <span id="stat-missing-servants" class="text-lg font-bold text-rose-400">15</span>
-                </div>
-            </div>
-
-            <!-- Search & Filters -->
-            <div class="flex flex-col sm:flex-row gap-3 mb-6 no-print">
-                <input type="text" id="search-input" placeholder="🔍 ابحث باسم خادم أو فكرة..." class="flex-grow bg-slate-900 border border-slate-800 rounded-xl px-4 py-2 text-xs text-slate-200 focus:outline-none focus:border-cyan-500" oninput="renderCalendar()">
-                <select id="filter-select" class="bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-200 focus:outline-none focus:border-cyan-500" onchange="renderCalendar()">
-                    <option value="all">كل الأيام</option>
-                    <option value="has-idea">الأيام ذات الأفكار (أزرق)</option>
-                    <option value="no-idea">الأيام بدون أفكار (أصفر)</option>
-                </select>
-            </div>
-
-            <!-- Color Guide -->
-            <div class="flex flex-wrap gap-4 mb-6 bg-slate-900/50 border border-slate-800/80 p-3 rounded-xl text-xs text-slate-300 no-print">
-                <div class="flex items-center gap-2"><span class="w-3 h-3 rounded-full bg-cyan-500"></span> فيه فكرة (أزرق)</div>
-                <div class="flex items-center gap-2"><span class="w-3 h-3 rounded-full bg-amber-500"></span> بدون فكرة (أصفر)</div>
-                <div class="flex items-center gap-2"><span class="w-3 h-3 rounded-full bg-slate-700"></span> يوم فات (رمادي - مقفول للتعديل)</div>
-            </div>
-
-            <!-- Grid Container -->
-            <div id="days-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                <!-- Days rendered dynamically -->
-            </div>
+            <button onclick="resetForm()" class="bg-slate-800 hover:bg-slate-700 text-cyan-400 font-bold text-xs px-6 py-3 rounded-xl border border-slate-700 transition">
+                تسجيل مشاركة أخرى +
+            </button>
         </div>
+
     </main>
-
-    <!-- Modal Dialog -->
-    <div id="day-modal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden no-print">
-        <div class="bg-slate-900 border border-slate-800 rounded-2xl w-full max-w-lg p-6 shadow-2xl relative">
-            <button onclick="closeModal()" class="absolute top-4 left-4 text-slate-400 hover:text-slate-100 text-lg">✕</button>
-            
-            <div class="mb-4">
-                <span id="modal-day-num" class="text-xs font-bold text-cyan-400 bg-cyan-950 border border-cyan-800 px-2.5 py-1 rounded-md"></span>
-                <h3 id="modal-date-title" class="text-lg font-bold text-slate-100 mt-2"></h3>
-            </div>
-
-            <!-- Idea Section -->
-            <div class="mb-5">
-                <label class="block text-xs font-semibold text-slate-300 mb-2">فكرة اليوم:</label>
-                <textarea id="modal-idea-input" rows="3" placeholder="اكتب فكرة اليوم هنا..." class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-sm text-slate-100 focus:outline-none focus:border-cyan-500 resize-none disabled:opacity-50 disabled:cursor-not-allowed" oninput="handleIdeaChange()"></textarea>
-            </div>
-
-            <!-- Servants Section -->
-            <div>
-                <div class="flex justify-between items-center mb-2">
-                    <label class="text-xs font-semibold text-slate-300">الخدام المسجلين (الحد الأقصى 7):</label>
-                    <span id="servants-count" class="text-xs text-slate-400">0 / 7</span>
-                </div>
-
-                <div class="flex gap-2 mb-3">
-                    <input type="text" id="servant-name-input" placeholder="اسم الخادم..." class="flex-grow bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm text-slate-100 focus:outline-none focus:border-cyan-500 disabled:opacity-50 disabled:cursor-not-allowed">
-                    <button id="add-servant-btn" onclick="addServant()" class="bg-cyan-600 hover:bg-cyan-500 text-white font-bold px-4 py-2 rounded-xl text-sm transition disabled:opacity-50 disabled:cursor-not-allowed">+</button>
-                </div>
-
-                <div id="servants-list" class="flex flex-wrap gap-2 max-h-36 overflow-y-auto p-1"></div>
-            </div>
-
-            <div class="mt-6 pt-4 border-t border-slate-800 text-left">
-                <button onclick="closeModal()" class="bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs px-4 py-2 rounded-xl border border-slate-700">إغلاق</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Alert Popup (Limit Reached) -->
-    <div id="alert-popup" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden no-print">
-        <div class="bg-slate-900 border border-amber-500/50 rounded-2xl w-full max-w-sm p-6 text-center shadow-2xl">
-            <div class="w-12 h-12 bg-amber-500/10 text-amber-400 rounded-full flex items-center justify-center mx-auto mb-3 text-xl font-bold">!</div>
-            <h4 class="text-lg font-bold text-slate-100 mb-2">ارجع للأمين الأول</h4>
-            <p class="text-xs text-slate-300 mb-6">وصلت للحد الأقصى من الخدام في اليوم ده (7 خدام).</p>
-            <button onclick="closeAlert()" class="bg-amber-600 hover:bg-amber-500 text-slate-950 font-bold text-xs px-6 py-2 rounded-xl w-full transition">موافق</button>
-        </div>
-    </div>
-
-    <!-- Toast Notification -->
-    <div id="toast" class="fixed bottom-5 left-5 bg-slate-800 border border-slate-700 text-slate-200 px-4 py-2.5 rounded-xl text-xs shadow-2xl transition-all duration-300 opacity-0 pointer-events-none z-50 no-print">
-        <span id="toast-msg">تمت العملية بنجاح</span>
-    </div>
 
     <script src="app.js"></script>
 </body>
