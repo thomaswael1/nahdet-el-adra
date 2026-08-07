@@ -37,16 +37,22 @@ const familyNames = {
 };
 
 // ==========================================
-// 3. UI SWITCHING & INITIALIZATION
+// 3. UI SWITCHING & INITIALIZATION (تعديل الانتقال الفوري)
 // ==========================================
 function selectFamily(familyKey) {
     currentFamily = familyKey;
+
+    // 1. إخفاء اختيار الأسر وإظهار صفحة الجدول في نفس اللحظة
     document.getElementById('family-selector').classList.add('hidden');
     document.getElementById('calendar-view').classList.remove('hidden');
     document.getElementById('back-btn').classList.remove('hidden');
     document.getElementById('print-btn').classList.remove('hidden');
     document.getElementById('page-title').innerText = familyNames[familyKey];
 
+    // 2. رسم الأيام فوراً وبشكل أولي
+    renderCalendar();
+
+    // 3. بدء مزامنة واستقبال البيانات من Firebase
     listenToDatabase();
 }
 
@@ -62,10 +68,7 @@ document.getElementById('back-btn').addEventListener('click', () => {
 // 4. REAL-TIME DATABASE SYNC
 // ==========================================
 function listenToDatabase() {
-    if (!db || !currentFamily) {
-        renderCalendar();
-        return;
-    }
+    if (!db || !currentFamily) return;
 
     showStatus('syncing');
     const familyRef = db.ref(`schedules/${currentFamily}`);
