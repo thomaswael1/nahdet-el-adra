@@ -14,7 +14,7 @@
     <!-- Header -->
     <header class="max-w-xl mx-auto w-full text-center my-4">
         <h1 class="text-2xl sm:text-3xl font-extrabold text-cyan-400 mb-1">استمارة تسجيل الخدمة</h1>
-        <p class="text-xs sm:text-sm text-slate-400">سجل مشاركتك في خدمة نهضة العذراء 2026 </p>
+        <p class="text-xs sm:text-sm text-slate-400">سجل مشاركتك وفكرتك للـ 15 يوماً القادمة</p>
     </header>
 
     <!-- Main Container -->
@@ -102,7 +102,7 @@
         <div id="thankyou-card" class="hidden bg-slate-900 border border-emerald-500/30 rounded-2xl p-8 w-full text-center shadow-2xl">
             <div class="w-16 h-16 bg-emerald-500/10 text-emerald-400 rounded-full flex items-center justify-center mx-auto mb-4 text-3xl font-bold">✓</div>
             <h2 class="text-2xl font-bold text-slate-100 mb-2">شكراً على خدمتك!</h2>
-            <p class="text-xs text-slate-400 mb-6">تم تسجيل بياناتك وفكرتك بنجاح  </p>
+            <p class="text-xs text-slate-400 mb-6">تم تسجيل بياناتك وفكرتك بنجاح في الشيت.</p>
             
             <button onclick="resetForm()" class="bg-slate-800 hover:bg-slate-700 text-cyan-400 font-bold text-xs px-6 py-3 rounded-xl border border-slate-700 transition">
                 تسجيل مشاركة أخرى +
@@ -193,7 +193,7 @@
             e.preventDefault();
 
             const submitBtn = document.getElementById('submit-btn');
-            submitBtn.innerText = "جاري التسجيل...";
+            submitBtn.innerText = "جاري الإرسال لجوجل شيت...";
             submitBtn.disabled = true;
 
             const formData = {
@@ -276,7 +276,7 @@
 
         function fetchSheetSubmissions() {
             const container = document.getElementById('day-details-container');
-            container.innerHTML = '<div class="text-center text-xs text-cyan-400 py-6">جاري تحميل البيانات ... ⏳</div>';
+            container.innerHTML = '<div class="text-center text-xs text-cyan-400 py-6">جاري تحميل البيانات من Google Sheets... ⏳</div>';
 
             fetch(SCRIPT_URL)
                 .then(res => res.json())
@@ -290,7 +290,7 @@
                 })
                 .catch(err => {
                     console.error('Error fetching data:', err);
-                    container.innerHTML = '<div class="text-center text-xs text-rose-400 py-6">عذراً، تعذر جلب البيانات من الشيت. تأكد من جود دالة doGet بالكريبت.</div>';
+                    container.innerHTML = '<div class="text-center text-xs text-rose-400 py-6">عذراً، تعذر جلب البيانات من الشيت. تأكد من وجود دالة doGet بالكريبت.</div>';
                 });
         }
 
