@@ -113,7 +113,10 @@
         <div id="admin-dashboard" class="hidden bg-slate-900 border border-slate-800 rounded-2xl p-6 w-full shadow-2xl space-y-6">
             <div class="flex justify-between items-center border-b border-slate-800 pb-4">
                 <h2 class="text-lg font-bold text-cyan-400">لوحة تحكم الأمين 🔒</h2>
-                <button onclick="closeAdminDashboard()" class="text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 px-3 py-1.5 rounded-lg border border-slate-700">خروج</button>
+                <div class="flex gap-2">
+                    <button onclick="fetchSheetSubmissions()" class="text-xs bg-cyan-950 text-cyan-400 hover:bg-cyan-900 border border-cyan-800 px-3 py-1.5 rounded-lg transition">تحديث 🔄</button>
+                    <button onclick="closeAdminDashboard()" class="text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 px-3 py-1.5 rounded-lg border border-slate-700">خروج</button>
+                </div>
             </div>
 
             <!-- Calendar Selector -->
@@ -150,7 +153,7 @@
     </div>
 
     <script>
-        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzGMMo8mE7_RXEDMnZ-glfmH9kqd4rMm-FMNAIUlZYX4oHTMLKXx6A1dsPImA08KqoNAw/exec";
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz3mbeEa1FMLvq8alMnUnvUoneF5bsprXmMFtabIFiVmga1XRhyRrlEAKizMyIIJ82eXg/exec";
 
         const daysList = [
             "اليوم 1 (الجمعة 7 أغسطس)",
@@ -171,7 +174,7 @@
         ];
 
         let selectedAdminDay = null;
-        let localSubmissions = [];
+        let sheetSubmissions = [];
 
         function toggleIdeaBox(show) {
             const container = document.getElementById('idea-container');
@@ -201,8 +204,6 @@
                 ideaText: document.getElementById('idea-text').value.trim(),
                 adminNotes: document.getElementById('admin-notes').value.trim()
             };
-
-            localSubmissions.push(formData);
 
             fetch(SCRIPT_URL, {
                 method: 'POST',
@@ -265,11 +266,32 @@
             document.getElementById('admin-dashboard').classList.remove('hidden');
 
             renderAdminCalendarGrid();
+            fetchSheetSubmissions();
         }
 
         function closeAdminDashboard() {
             document.getElementById('admin-dashboard').classList.add('hidden');
             document.getElementById('form-card').classList.remove('hidden');
+        }
+
+        function fetchSheetSubmissions() {
+            const container = document.getElementById('day-details-container');
+            container.innerHTML = '<div class="text-center text-xs text-cyan-400 py-6">جاري تحميل البيانات من Google Sheets... ⏳</div>';
+
+            fetch(SCRIPT_URL)
+                .then(res => res.json())
+                .then(data => {
+                    sheetSubmissions = data || [];
+                    if (selectedAdminDay) {
+                        renderDayDetails();
+                    } else {
+                        container.innerHTML = '<div class="text-center text-xs text-slate-500 py-6">اختر يوماً من الأعلى لعرض تفاصيل التسجيلات والأسر</div>';
+                    }
+                })
+                .catch(err => {
+                    console.error('Error fetching data:', err);
+                    container.innerHTML = '<div class="text-center text-xs text-rose-400 py-6">عذراً، تعذر جلب البيانات من الشيت. تأكد من جود دالة doGet بالكريبت.</div>';
+                });
         }
 
         function renderAdminCalendarGrid() {
@@ -296,7 +318,7 @@
             const container = document.getElementById('day-details-container');
             if (!selectedAdminDay) return;
 
-            const daySubmissions = localSubmissions.filter(s => s.date === selectedAdminDay);
+            const daySubmissions = sheetSubmissions.filter(s => s.date === selectedAdminDay);
             container.innerHTML = '';
 
             const families = ['أسرة أولى وثانية', 'أسرة ثالثة ورابعة', 'أسرة خامسة وسادسة'];
@@ -309,13 +331,13 @@
 
                 let submissionsHtml = '';
                 if (fSubmissions.length === 0) {
-                    submissionsHtml = `<p class="text-xs text-slate-600 italic">لا توجد تسجيلات جديدة لهذه الأسرة حتى الآن</p>`;
+                    submissionsHtml = `<p class="text-xs text-slate-600 italic">لا توجد تسجيلات لهذه الأسرة في هذا اليوم</p>`;
                 } else {
                     submissionsHtml = fSubmissions.map(item => `
                         <div class="bg-slate-900 border border-slate-800/60 rounded-lg p-3 text-xs space-y-1.5 relative">
                             <div class="font-bold text-slate-100">${item.name}</div>
                             ${item.hasIdea ? `<div class="text-cyan-400 bg-cyan-950/40 p-2 rounded border border-cyan-900/50"><strong class="block text-[10px] text-cyan-300">الفكرة:</strong> ${item.ideaText}</div>` : '<div class="text-slate-500">بدون فقرة</div>'}
-                            ${item.adminNotes ? `<div class="text-amber-400/90 bg-amber-950/20 p-2 rounded border border-amber-900/40"><strong class="block text-[10px] text-amber-300">ملاحظة للأمين:</strong> ${item.adminNotes}</div>` : ''}
+                            ${item.adminNotes && item.adminNotes !== '-' ? `<div class="text-amber-400/90 bg-amber-950/20 p-2 rounded border border-amber-900/40"><strong class="block text-[10px] text-amber-300">ملاحظة للأمين:</strong> ${item.adminNotes}</div>` : ''}
                         </div>
                     `).join('');
                 }
